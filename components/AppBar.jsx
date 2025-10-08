@@ -1,7 +1,8 @@
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import Constants from 'expo-constants';
 import Text from './styleComponent/Text';
 import { Link } from 'react-router-native';
+import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 
 const styles = StyleSheet.create({
   bgColor: {
@@ -14,20 +15,22 @@ const styles = StyleSheet.create({
 
 const AppBar = () => {
   return (
-    <View style={styles.bgColor}>
-      {/* <Pressable onPress={() => console.log(' we are press')}> */}
-      <Link to={'/'}>
-        <Text style={styles.container} color={'primary'}>
-          Repository
-        </Text>
-      </Link>
-      {/* </Pressable> */}
-      <Link to={'/signin'}>
-        <Text style={styles.container} color={'primary'}>
-          SignIn
-        </Text>
-      </Link>
-    </View>
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container} edges={['top']}>
+        <ScrollView horizontal>
+          <View style={styles.bgColor}>
+            {/* <Pressable onPress={() => console.log(' we are press')}> */}
+            <Link to={'/'}>
+              <Text color={'primary'}>Repository</Text>
+            </Link>
+            {/* </Pressable> */}
+            <Link to={'/signin'}>
+              <Text color={'primary'}>SignIn</Text>
+            </Link>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 };
 
