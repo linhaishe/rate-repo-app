@@ -73,3 +73,43 @@ The first difference is that the *Text* component is *the only* React Native com
 The second notable difference is related to the event handlers. While working with the DOM elements we are used to adding event handlers such as *onClick* to basically any element such as *<div>* and *<button>*. In React Native we have to carefully read the [API documentation](https://reactnative.dev/docs/components-and-apis) to know what event handlers (as well as other props) a component accepts.
 
  Luckily React Native provides a handy component for displaying a list of data, which is the [FlatList](https://reactnative.dev/docs/flatlist) component.
+
+# Style
+
+On top of the property names, you might have noticed another difference in the example. In CSS numerical property values commonly have a unit such as *px*, *%*, *em* or *rem*. In React Native all dimension-related property values such as *width*, *height*, *padding*, and *margin* as well as font sizes are *unitless*. These unitless numeric values represent *density-independent pixels*. In case you are wondering what are the available style properties for certain core components, check the [React Native Styling Cheat Sheet](https://github.com/vhpoet/react-native-styling-cheat-sheet).
+
+In general, defining styles directly in the *style* prop is not considered such a great idea, because it makes components bloated and unclear. Instead, we should define styles outside the component's render function using the [StyleSheet.create](https://reactnative.dev/docs/stylesheet#create) method. The *StyleSheet.create* method accepts a single argument which is an object consisting of named style objects and it creates a StyleSheet style reference from the given object. Here is an example of how to refactor the previous example using the *StyleSheet.create* method:
+
+```jsx
+import { Text, View, StyleSheet } from 'react-native';
+
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 20,
+  },
+  text: {
+    color: 'blue',
+    fontSize: 24,
+    fontWeight: '700',
+  },
+});
+
+const BigBlueText = () => {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.text}>
+        Big blue text
+      </Text>
+    </View>
+  );
+};
+```
+
+Perhaps the most important properties of a flex container are the following:
+
+- [flexDirection](https://css-tricks.com/almanac/properties/f/flex-direction/) property controls the direction in which the flex items are laid out within the container. Possible values for this property are *row*, *row-reverse*, *column* (default value) and *column-reverse*. Flex direction *row* will lay out the flex items from left to right, whereas *column* from top to bottom. **-reverse* directions will just reverse the order of the flex items.
+- [justifyContent](https://css-tricks.com/almanac/properties/j/justify-content/) property controls the alignment of flex items along the main axis (defined by the *flexDirection* property). Possible values for this property are *flex-start* (default value), *flex-end*, *center*, *space-between*, *space-around* and *space-evenly*.
+- [alignItems](https://css-tricks.com/almanac/properties/a/align-items/) property does the same as *justifyContent* but for the opposite axis. Possible values for this property are *flex-start*, *flex-end*, *center*, *baseline* and *stretch* (default value).
+
+More on React Native's flexbox implementation can be read in the [documentation](https://reactnative.dev/docs/flexbox).
