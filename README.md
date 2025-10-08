@@ -27,7 +27,49 @@ To inspect the React element tree, props, and state you can install React DevToo
 
 Read here about [React DevTools](https://reactnative.dev/docs/react-devtools). For more useful React Native application debugging tools, also head out to the Expo's [debugging documentation](https://docs.expo.io/workflow/debugging).
 
-```bash
+```
 npx react-devtools
 ```
 
+# Core components
+
+As we can see, React is not bound to a certain environment, such as the browser environment. Instead, there are libraries such as ReactDOM that can render *a set of predefined components*, such as DOM elements, in a specific environment. In React Native these predefined components are called *core components*.
+
+[Core components](https://reactnative.dev/docs/intro-react-native-components) are a set of components provided by React Native, which behind the scenes utilize the platform's native components. Let's implement the previous example using React Native:
+
+Many familiar DOM elements have their React Native "counterparts". Here are some examples picked from React Native's [Core Components documentation](https://reactnative.dev/docs/components-and-apis):
+
+- [Text](https://reactnative.dev/docs/text) component is *the only* React Native component that can have textual children. It is similar to for example the *<strong>* and the *<h1>* elements.
+- [View](https://reactnative.dev/docs/view) component is the basic user interface building block similar to the *<div>* element.
+- [TextInput](https://reactnative.dev/docs/textinput) component is a text field component similar to the *<input>* element.
+- [Pressable](https://reactnative.dev/docs/pressable) component is for capturing different press events. It is similar to for example the *<button>* element.
+
+```react
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View } from 'react-native';
+
+export default function App() {
+  return (
+    <View style={styles.container}>
+      <Text>Open up App.js to start working on your app!</Text>
+      <StatusBar style='auto' />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    flex: 1,
+    justifyContent: 'center',
+  },
+});
+
+```
+
+The first difference is that the *Text* component is *the only* React Native component that can have textual children. This means that you can't, for example, replace the *Text* component with the *View* component in the previous example.
+
+The second notable difference is related to the event handlers. While working with the DOM elements we are used to adding event handlers such as *onClick* to basically any element such as *<div>* and *<button>*. In React Native we have to carefully read the [API documentation](https://reactnative.dev/docs/components-and-apis) to know what event handlers (as well as other props) a component accepts.
+
+ Luckily React Native provides a handy component for displaying a list of data, which is the [FlatList](https://reactnative.dev/docs/flatlist) component.
