@@ -1,10 +1,16 @@
 import { useMutation } from '@apollo/client';
 import { USER_AUTH } from '../graphQL/queries';
 import { useState, useEffect } from 'react';
-import AuthStorage from '../utils/authStorage';
+import useAuthStorage from './useAuthStorage';
+import { useApolloClient } from '@apollo/client';
+import { useNavigate } from 'react-router-native';
 
 const useSignIn = () => {
-  const authStorage = new AuthStorage('app-user-token');
+  const authStorage = useAuthStorage();
+  const apolloClient = useApolloClient();
+  const navigate = useNavigate();
+  // const authStorage = useContext(AuthStorageContext);
+  // const authStorage = new AuthStorage('app-user-token');
   // 登录状态： null = 未尝试, false = 登录失败, true = 登录成功
   const [isLoggedIn, setIsLoggedIn] = useState(null);
   const [userData, setUserData] = useState(null);
@@ -25,6 +31,7 @@ const useSignIn = () => {
       if (data?.authenticate?.accessToken) {
         setIsLoggedIn(true);
         await storeData(data.authenticate);
+        navigate(-1);
       } else {
         setIsLoggedIn(false);
       }
@@ -35,7 +42,9 @@ const useSignIn = () => {
 
   const storeData = async (value) => {
     try {
+      // await authStorage.setAccessToken(value);
       await authStorage.setAccessToken(value);
+      apolloClient.resetStore();
       setUserData(value);
     } catch (e) {
       console.log('AsyncStorage error:', e);

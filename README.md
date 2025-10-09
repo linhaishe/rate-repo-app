@@ -337,3 +337,149 @@ expo start -c
 import { GRAPHQL_URL } from '@env';
 ```
 
+这套 `AuthStorageContext` + `AuthStorage` 实际上是 **一个全局管理登录 token 的方案**，用来解决你之前遇到的父组件和子组件登录状态不同步的问题。让我帮你拆解清楚它的作用和工作机制：
+
+------
+
+## 1️⃣ 核心作用
+
+`AuthStorageContext` 是一个 **React Context**，它把 `AuthStorage` 实例提供给整个组件树。
+
+- **AuthStorage** 封装了 **AsyncStorage** 的操作：
+  - `getAccessToken()` → 获取本地 token
+  - `setAccessToken()` → 保存 token
+  - `removeAccessToken()` → 删除 token
+- **AuthStorageContext** 提供给任何组件，通过 `useContext(AuthStorageContext)` 或者你的 `useAuthStorage()` Hook 访问 `AuthStorage`。
+
+------
+
+## 2️⃣ 为什么要用 Context
+
+如果你不使用 Context，每个组件都需要自己写 AsyncStorage 逻辑：
+
+```
+const token = await AsyncStorage.getItem('auth');
+```
+
+- 代码重复
+- 状态更新难以共享
+- 父子组件之间不能同步登录状态
+
+使用 Context 后：
+
+- 父组件和子组件可以 **统一访问同一个 AuthStorage 实例**
+- 登录状态可以通过 token 存在与否判断
+- Apollo Client 也可以通过它获取 token，实现 **全局认证**
+
+------
+
+## 3️⃣ 实际工作流程
+
+以你代码为例：
+
+```
+<AuthStorageContext.Provider value={authStorage}>
+  <Main />
+</AuthStorageContext.Provider>
+```
+
+- `authStorage` 是 AuthStorage 实例
+- Main 或其子组件调用 `useAuthStorage()`：
+
+```
+const authStorage = useAuthStorage();
+const token = await authStorage.getAccessToken();
+```
+
+- 这样就能读取父组件中统一管理的 token
+- 登录成功时可以：
+
+```
+await authStorage.setAccessToken(newToken);
+```
+
+- 所有使用 `useAuthStorage()` 的组件都会看到相同的 token
+- 父组件可以据此渲染不同内容（登录/未登录）
+
+------
+
+## 4️⃣ 与 Apollo Client 的结合
+
+```
+const apolloClient = createApolloClient(authStorage);
+```
+
+- `createApolloClient` 可以在 **每次请求 header** 里读取 token：
+
+```
+const client = new ApolloClient({
+  uri: GRAPHQL_URL,
+  cache: new InMemoryCache(),
+  headers: {
+    authorization: `Bearer ${await authStorage.getAccessToken()}`
+  }
+});
+```
+
+- 这样所有 GraphQL 请求都会带上最新的 token
+- 而 token 更新在任何组件中都会生效（因为都用同一个 AuthStorage 实例）
+
+------
+
+## 5️⃣ 总结
+
+`AuthStorageContext` + `AuthStorage` 的好处：
+
+1. **统一管理 token**
+   - 所有组件共享同一个 token 实例
+2. **简化登录状态判断**
+   - 父组件可以用 `authStorage.getAccessToken()` 判断是否已登录
+3. **结合 Apollo Client**
+   - 自动在请求中携带 token
+4. **减少重复代码**
+   - 不需要在每个组件都写 AsyncStorage 逻辑
+
+✅ 本质上，它解决了你之前父组件和 SignInForm **状态不同步**的问题：
+
+- 不再依赖单独 Hook 内的 `isLoggedIn`
+- 父组件可以根据 **存储的 token** 判断显示用户信息或登录表单
+
+-----
+
+const authStorage = new AuthStorage();
+const apolloClient = createApolloClient(authStorage);
+apolloClient 是你创建的 Apollo Client 实例
+
+它在下面通过 ApolloProvider 提供给整个组件树：
+
+jsx
+复制代码
+<ApolloProvider client={apolloClient}>
+  <AuthStorageContext.Provider value={authStorage}>
+    <Main />
+  </AuthStorageContext.Provider>
+</ApolloProvider>
+这就意味着：
+
+在 ApolloProvider 包裹下的 任何组件或自定义 Hook，都可以通过 useApolloClient() 获取这个实例。
+
+所以在你的 useSignIn Hook 内：
+
+js
+复制代码
+import { useApolloClient } from '@apollo/client';
+
+const apolloClient = useApolloClient();
+拿到的就是这个 App.js 里创建的 apolloClient。
+
+⚠️ 注意：
+
+useApolloClient() 必须在 ApolloProvider 内使用，否则会返回 undefined 或报错
+
+一旦拿到 apolloClient，你就可以执行：
+
+js
+复制代码
+await apolloClient.mutate({ mutation: USER_AUTH, variables: {...} });
+await apolloClient.resetStore();
+这样就可以实现你之前提到的 登录后存 token + 清空缓存 + 刷新活跃 queries 的逻辑。
