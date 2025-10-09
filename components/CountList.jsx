@@ -33,7 +33,6 @@ const formatRepositoryStats = (repo) => [
 
 const CountList = ({ item }) => {
   const statusDataList = formatRepositoryStats(item);
-  console.log('itemList', formatRepositoryStats(item));
 
   return (
     <View style={styles.listWrap}>
