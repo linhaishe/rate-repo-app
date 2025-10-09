@@ -38,3 +38,12 @@ export const USER_AUTH = gql`
     }
   }
 `;
+
+export const IS_ME = gql`
+  query {
+    me {
+      id
+      username
+    }
+  }
+`;
