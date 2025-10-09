@@ -1,9 +1,10 @@
 import { useMutation } from '@apollo/client';
 import { USER_AUTH } from '../graphQL/queries';
 import { useState, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AuthStorage from '../utils/authStorage';
 
 const useSignIn = () => {
+  const authStorage = new AuthStorage('app-user-token');
   // 登录状态： null = 未尝试, false = 登录失败, true = 登录成功
   const [isLoggedIn, setIsLoggedIn] = useState(null);
   const [userData, setUserData] = useState(null);
@@ -34,8 +35,7 @@ const useSignIn = () => {
 
   const storeData = async (value) => {
     try {
-      const jsonValue = JSON.stringify(value);
-      await AsyncStorage.setItem('app-user-token', jsonValue);
+      await authStorage.setAccessToken(value);
       setUserData(value);
     } catch (e) {
       console.log('AsyncStorage error:', e);
@@ -44,8 +44,7 @@ const useSignIn = () => {
 
   const checkLocalToken = async () => {
     try {
-      const jsonValue = await AsyncStorage.getItem('app-user-token');
-      const token = jsonValue ? JSON.parse(jsonValue) : null;
+      const token = await authStorage.getAccessToken();
       if (token?.accessToken) {
         setIsLoggedIn(true);
         setUserData(token);
