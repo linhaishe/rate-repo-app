@@ -38,6 +38,7 @@ export default [
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
       'react-native/no-color-literals': 'off',
+      'no-unused-vars': 'off',
     },
   },
 ];

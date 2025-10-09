@@ -1,3 +1,5 @@
+/* eslint-disable react-native/no-unused-styles */
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-native/no-inline-styles */
 import { View, StyleSheet, ScrollView } from 'react-native';
 import Constants from 'expo-constants';

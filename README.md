@@ -113,3 +113,127 @@ Perhaps the most important properties of a flex container are the following:
 - [alignItems](https://css-tricks.com/almanac/properties/a/align-items/) property does the same as *justifyContent* but for the opposite axis. Possible values for this property are *flex-start*, *flex-end*, *center*, *baseline* and *stretch* (default value).
 
 More on React Native's flexbox implementation can be read in the [documentation](https://reactnative.dev/docs/flexbox).
+
+It is usually a good idea to log the server's response to be able to inspect it as we did in the *fetchRepositories* function. You should be able to see this log message in the Expo development tools if you navigate to your device's logs as we learned in the [Debugging](https://fullstackopen.com/en/part10/introduction_to_react_native#debugging) section. If you are using the Expo's mobile app for development and the network request is failing, make sure that the computer you are using to run the server and your phone are *connected to the same Wi-Fi network*. If that's not possible either use an emulator in the same computer as the server is running in or set up a tunnel to the localhost, for example, using [Ngrok](https://ngrok.com/).
+
+```node
+Web Bundling failed 1402ms (node_modules/expo/AppEntry.js)
+Unable to resolve "@env" from "components/RepositoryList.jsx"
+› Detected a change in babel.config.js. Restart the server to see the new results. You may need to clear the bundler cache with the --clear flag for your changes to take effect.
+› Stopped server
+➜  rate-repo-app git:(main) ✗ npx expo start -c
+```
+
+### 🧩 第一步：安装插件
+
+请在项目根目录下执行：
+
+```
+npm install react-native-dotenv
+```
+
+或者用 yarn：
+
+```
+yarn add react-native-dotenv
+```
+
+> ⚠️ 注意：**不要安装 `dotenv`**（那是 Node.js 用的），必须是 `react-native-dotenv`
+
+------
+
+### ⚙️ 第二步：修改 `babel.config.js`
+
+打开项目根目录的 `babel.config.js` 文件，添加以下内容：
+
+```
+module.exports = function (api) {
+  api.cache(true);
+  return {
+    presets: ['babel-preset-expo'], // 如果你是 Expo 项目
+    plugins: [
+      [
+        'module:react-native-dotenv',
+        {
+          moduleName: '@env',  // 这里的名字必须和你 import 时一致
+          path: '.env',
+          blacklist: null,
+          whitelist: null,
+          safe: false,
+          allowUndefined: true,
+        },
+      ],
+    ],
+  };
+};
+```
+
+> 🔥 Expo 项目默认的 preset 是 `babel-preset-expo`
+>  如果是纯 React Native CLI 项目，则是 `metro-react-native-babel-preset`。
+
+------
+
+### 📄 第三步：创建 `.env` 文件
+
+在项目根目录（和 `package.json` 同级）新建 `.env` 文件：
+
+```
+API_URL=http://192.168.31.136:5001
+```
+
+（替换成你的本机局域网 IP）
+
+------
+
+### 🧠 第四步：在组件中导入
+
+然后在你的 `RepositoryList.jsx` 里：
+
+```
+import { API_URL } from '@env'; // ✅ 正确导入
+```
+
+------
+
+### 🧹 第五步：清除缓存并重新运行
+
+React Native 有缓存机制，所以需要**清除缓存后重启**。
+
+执行以下命令：
+
+```
+npx expo start -c
+```
+
+或者如果是 React Native CLI 项目：
+
+```
+npx react-native start --reset-cache
+```
+
+### Evolving the structure
+
+Once our application grows larger there might be times when certain files grow too large to manage. For example, we have component *A* which renders the components *B* and *C*. All these components are defined in a file *A.jsx* in a *components* directory. We would like to extract components *B* and *C* into their own files *B.jsx* and *C.jsx* without major refactors. We have two options:
+
+- Create files *B.jsx* and *C.jsx* in the *components* directory. This results in the following structure:
+
+```bash
+components/
+  A.jsx
+  B.jsx
+  C.jsx
+  ...copy
+```
+
+- Create a directory *A* in the *components* directory and create files *B.jsx* and *C.jsx* there. To avoid breaking components that import the *A.jsx* file, move the *A.jsx* file to the *A* directory and rename it to *index.jsx*. This results in the following structure:
+
+```bash
+components/
+  A/
+    B.jsx
+    C.jsx
+    index.jsx
+  ...copy
+```
+
+The first option is fairly decent, however, if components *B* and *C* are not reusable outside the component *A*, it is useless to bloat the *components* directory by adding them as separate files. The second option is quite modular and doesn't break any imports because importing a path such as *./A* will match both *A.jsx* and *A/index.jsx*.
