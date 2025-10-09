@@ -1,9 +1,9 @@
 /* eslint-disable react-native/no-inline-styles */
-import Text from './styleComponent/Text';
+import Text from '../styleComponent/Text';
 import { useFormik } from 'formik';
 import { Pressable, View, TextInput, StyleSheet } from 'react-native';
 import * as yup from 'yup';
-import theme from './styleComponent/theme';
+import theme from '../styleComponent/theme';
 
 const styles = StyleSheet.create({
   errorBorder: {
@@ -54,17 +54,18 @@ const validationSchema = yup.object().shape({
     .required('userName is required'),
   pwd: yup
     .string()
-    .min(7, 'password must be longer then 5 characters')
+    .min(4, 'password must be longer then 4 characters')
     .required('password is required'),
 });
 
-const SignIn = () => {
-  const onSubmit = (values) => {
+const SignInForm = (props) => {
+  const onSubmit = async (values) => {
     formik.setTouched({
       userName: true,
       pwd: true,
     });
-    console.log('submit:', values);
+    const { userName, pwd } = values;
+    props?.onSubmit({ username: userName, password: pwd });
   };
 
   const formik = useFormik({
@@ -119,4 +120,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default SignInForm;

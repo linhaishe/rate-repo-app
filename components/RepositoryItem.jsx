@@ -29,11 +29,12 @@ const styles = StyleSheet.create({
   },
 
   typeWrap: {
+    alignSelf: 'flex-start',
     backgroundColor: theme.colors.primary,
     borderRadius: 3,
     color: '#fff',
+    maxWidth: 200,
     padding: 6,
-    width: 'max-content',
   },
 });
 

@@ -237,3 +237,103 @@ components/
 ```
 
 The first option is fairly decent, however, if components *B* and *C* are not reusable outside the component *A*, it is useless to bloat the *components* directory by adding them as separate files. The second option is quite modular and doesn't break any imports because importing a path such as *./A* will match both *A.jsx* and *A/index.jsx*.
+
+## Storing data in the user's device
+
+There are times when we need to store some persisted pieces of data in the user's device. One such common scenario is storing the user's authentication token so that we can retrieve it even if the user closes and reopens our application. In web development, we have used the browser's *localStorage* object to achieve such functionality. React Native provides similar persistent storage, the [AsyncStorage](https://react-native-async-storage.github.io/async-storage/docs/usage/).
+
+```shell
+npx expo install @react-native-async-storage/async-storage
+```
+
+The API of the *AsyncStorage* is in many ways same as the *localStorage* API. They are both key-value storages with similar methods. The biggest difference between the two is that, as the name implies, the operations of *AsyncStorage* are *asynchronous*.
+
+```
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+class ShoppingCartStorage {
+  constructor(namespace = 'shoppingCart') {
+    this.namespace = namespace;
+  }
+
+  async getProducts() {
+    const rawProducts = await AsyncStorage.getItem(
+      `${this.namespace}:products`,
+    );
+
+    return rawProducts ? JSON.parse(rawProducts) : [];
+  }
+
+  async addProduct(productId) {
+    const currentProducts = await this.getProducts();
+    const newProducts = [...currentProducts, productId];
+
+    await AsyncStorage.setItem(
+      `${this.namespace}:products`,
+      JSON.stringify(newProducts),
+    );
+  }
+
+  async clearProducts() {
+    await AsyncStorage.removeItem(`${this.namespace}:products`);
+  }
+}
+
+const doShopping = async () => {
+  const shoppingCartA = new ShoppingCartStorage('shoppingCartA');
+  const shoppingCartB = new ShoppingCartStorage('shoppingCartB');
+
+  await shoppingCartA.addProduct('chips');
+  await shoppingCartA.addProduct('soda');
+
+  await shoppingCartB.addProduct('milk');
+
+  const productsA = await shoppingCartA.getProducts();
+  const productsB = await shoppingCartB.getProducts();
+
+  console.log(productsA, productsB);
+
+  await shoppingCartA.clearProducts();
+  await shoppingCartB.clearProducts();
+};
+
+doShopping();
+```
+
+## env
+
+#### ✅ 方式 1（推荐）：`react-native-dotenv`
+
+安装：
+
+```
+npm install react-native-dotenv
+```
+
+在 `babel.config.js` 里加上插件：
+
+```
+module.exports = function (api) {
+  api.cache(true);
+  return {
+    presets: ['babel-preset-expo'],
+    plugins: [
+      ['module:react-native-dotenv', {
+        moduleName: '@env',
+        path: '.env',
+      }],
+    ],
+  };
+};
+```
+
+然后重启项目：
+
+```
+expo start -c
+```
+
+```
+import { GRAPHQL_URL } from '@env';
+```
+
