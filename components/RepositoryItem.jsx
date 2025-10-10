@@ -40,9 +40,9 @@ const styles = StyleSheet.create({
 
 const RepositoryItem = ({ item }) => {
   return (
-    <View style={styles.cardWrap}>
+    <View style={styles.cardWrap} testID='repositoryItem'>
       <View style={styles.infoWrap}>
-        <Image style={styles.imgWrap} source={item.ownerAvatarUrl} />
+        <Image style={styles.imgWrap} source={{ uri: item.ownerAvatarUrl }} />
         <View style={styles.detailWrap}>
           <Text fontWeight={'bold'}>{item.fullName}</Text>
           <Text color={'textSecondary'}>{item.description}</Text>

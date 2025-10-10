@@ -483,3 +483,82 @@ js
 await apolloClient.mutate({ mutation: USER_AUTH, variables: {...} });
 await apolloClient.resetStore();
 这样就可以实现你之前提到的 登录后存 token + 清空缓存 + 刷新活跃 queries 的逻辑。
+
+-----
+
+ FAIL   __tests__/example.test.js
+  ● Test suite failed to run
+
+    TypeError: Object.defineProperty called on non-object
+        at Function.defineProperty (<anonymous>)
+    
+      at Object.<anonymous> (node_modules/jest-expo/src/preset/setup.js:47:8)
+
+Test Suites: 1 failed, 1 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        6.663 s
+Ran all test suites.
+
+```
+npm ls jest-expo expo react-native jest
+rate-repository-app@1.0.0 /Users/chenruo/Documents/GitHub/rate-repo-app
+├─┬ @expo/metro-runtime@3.1.3
+│ └── react-native@0.73.6 deduped
+├─┬ @react-native-async-storage/async-storage@1.21.0
+│ └── react-native@0.73.6 deduped
+├─┬ eslint-plugin-jest@29.0.1
+│ └── jest@29.7.0 deduped
+├─┬ expo@50.0.21
+│ ├─┬ @expo/vector-icons@14.1.0
+│ │ └── react-native@0.73.6 deduped
+│ ├─┬ expo-asset@9.0.2
+│ │ └─┬ expo-constants@15.4.6
+│ │   └── expo@50.0.21 deduped
+│ ├─┬ expo-file-system@16.0.9
+│ │ └── expo@50.0.21 deduped
+│ ├─┬ expo-font@11.10.3
+│ │ └── expo@50.0.21 deduped
+│ └─┬ expo-keep-awake@12.8.2
+│   └── expo@50.0.21 deduped
+├─┬ jest-expo@54.0.12
+│ ├── expo@50.0.21 deduped
+│ ├─┬ jest-watch-typeahead@2.2.1
+│ │ └── jest@29.7.0 deduped
+│ └── react-native@0.73.6 deduped
+├── jest@29.7.0
+├─┬ react-native-safe-area-context@4.14.1
+│ └── react-native@0.73.6 deduped
+├─┬ react-native@0.73.6
+│ └─┬ @react-native/virtualized-lists@0.73.4
+│   └── react-native@0.73.6 deduped
+└─┬ react-router-native@6.30.0
+  └── react-native@0.73.6 deduped
+```
+
+| 包名             | 版本      |
+| ---------------- | --------- |
+| **expo**         | `50.0.21` |
+| **react-native** | `0.73.6`  |
+| **jest-expo**    | `54.0.12` |
+| **jest**         | `29.7.0`  |
+
+🧨 **不兼容点：**
+ `jest-expo@54.x` 是为 **Expo SDK 54（React Native 0.76）** 设计的，
+ 但你当前是 **Expo SDK 50（React Native 0.73）**。
+
+这会导致它内部在 `node_modules/jest-expo/src/preset/setup.js` 调用 `Object.defineProperty(global.navigator, ...)` 时出错（因为旧 SDK 的 runtime 环境初始化逻辑不同）
+
+```
+npm install --save-dev jest-expo@50.0.3
+rm -rf node_modules
+rm package-lock.json
+npm cache clean --force
+npm install
+```
+
+React Native Testing Library's documentation has some good hints on [how to query different kinds of elements](https://callstack.github.io/react-native-testing-library/docs/guides/how-to-query). Another guide worth reading is Kent C. Dodds article [Making your UI tests resilient to change](https://kentcdodds.com/blog/making-your-ui-tests-resilient-to-change).
+
+For all available queries, check the React Native Testing Library's [documentation](https://callstack.github.io/react-native-testing-library/docs/api/queries). The full list of available React Native specific matchers can be found in the [documentation](https://github.com/testing-library/jest-native#matchers) of the jest-native library. Jest's [documentation](https://jestjs.io/docs/en/expect) contains every universal Jest matcher.
+
+The second very important React Native Testing Library concept is firing events. We can fire an event in a provided node by using the [fireEvent](https://callstack.github.io/react-native-testing-library/docs/api#fireevent) object's methods. This is useful for example typing text into a text field or pressing a button. Here is an example of how to test submitting a simple form:

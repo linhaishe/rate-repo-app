@@ -1,5 +1,6 @@
 import { View, StyleSheet } from 'react-native';
 import Text from './styleComponent/Text';
+import { formatCount } from '../utils/formatCount';
 
 const styles = StyleSheet.create({
   itemWrap: {
@@ -15,14 +16,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
-
-const formatCount = (value, k = 1000) => {
-  if (value < k) return String(value);
-  const formatted = (value / k).toFixed(1);
-  return formatted.endsWith('.0')
-    ? `${formatted.slice(0, -2)}k`
-    : `${formatted}k`;
-};
 
 const formatRepositoryStats = (repo) => [
   { name: 'Stars', value: repo.stargazersCount },
