@@ -84,6 +84,7 @@ function RepoDetail() {
   const { data } = useQuery(GET_REPO_DETAIL, {
     variables: { repositoryId: id },
     skip: !id,
+    fetchPolicy: 'cache-and-network',
   });
 
   const reviews = data?.repository?.reviews?.edges?.map((v) => {

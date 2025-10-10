@@ -60,6 +60,13 @@ const AppBar = () => {
           Repository
         </Text>
       </Link>
+      {data?.me?.id && (
+        <Link to={'/create-review'}>
+          <Text style={{ color: '#fff' }} fontWeights={'bold'}>
+            Create Review
+          </Text>
+        </Link>
+      )}
       {signInRender()}
     </View>
     //     </ScrollView>

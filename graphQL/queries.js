@@ -82,3 +82,21 @@ export const GET_REPO_DETAIL = gql`
     }
   }
 `;
+
+export const ADD_REVIEW = gql`
+  mutation CreateReview($review: CreateReviewInput) {
+    createReview(review: $review) {
+      createdAt
+      id
+      user {
+        id
+        username
+      }
+      rating
+      text
+      repository {
+        id
+      }
+    }
+  }
+`;
