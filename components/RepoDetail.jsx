@@ -3,9 +3,9 @@ import { useParams } from 'react-router-native';
 import { useQuery } from '@apollo/client';
 import { GET_REPO_DETAIL } from '../graphQL/queries';
 import { FlatList, View, StyleSheet } from 'react-native';
-import { useState } from 'react';
 import Text from './styleComponent/Text';
 import theme from './styleComponent/theme';
+import { format } from 'date-fns';
 
 const styles = StyleSheet.create({
   reviewWrap: {
@@ -53,29 +53,26 @@ const ReviewItem = ({ review }) => {
       <View style={styles.scoreWrap}>
         <View style={styles.scoreTextWrap}>
           <Text color={'primary'} fontWeight={'bold'} style={styles.scoreText}>
-            95
+            {review?.rating}
           </Text>
         </View>
       </View>
       <View style={styles.comment}>
-        <Text fontWeight={'bold'}>kalle</Text>
+        <Text fontWeight={'bold'}>{review?.user?.username}</Text>
         <Text
           color={'textSecondary'}
           style={{
             marginTop: 5,
           }}
         >
-          05.05.2020
+          {review?.createdAt}
         </Text>
         <Text
           style={{
             marginTop: 10,
           }}
         >
-          Review's text field contains the textual review, rating field a
-          numeric rating between 0 and 100, and createdAt the date when the
-          review was created. Review's user field contains the reviewer's
-          information, which is of type User.
+          {review?.text}
         </Text>
       </View>
     </View>
@@ -88,12 +85,14 @@ function RepoDetail() {
     variables: { repositoryId: id },
     skip: !id,
   });
-  const [reviews, setReviews] = useState([
-    {
-      id,
-      content: '1111',
-    },
-  ]);
+
+  const reviews = data?.repository?.reviews?.edges?.map((v) => {
+    const { node } = v;
+    return {
+      ...node,
+      createdAt: format(node?.createdAt, 'MM/dd/yyyy'),
+    };
+  });
 
   return (
     <FlatList
