@@ -5,6 +5,8 @@ import AppBar from './AppBar';
 import { Route, Routes, Navigate } from 'react-router-native';
 import RepoDetail from './RepoDetail';
 import ReviewForm from './ReviewForm';
+import SignUp from './SignUp';
+import useSignIn from '../hooks/useSignIn';
 
 const styles = StyleSheet.create({
   container: {
@@ -15,14 +17,30 @@ const styles = StyleSheet.create({
 });
 
 const Main = () => {
+  const { signIn, setIsLoggedIn, isLoggedIn, userData } = useSignIn();
+
   return (
     <View style={styles.container}>
       <AppBar />
       <Routes>
         <Route path='/' element={<RepositoryList />} />
-        <Route path='/signin' element={<SignIn />} />
+        <Route
+          path='/signin'
+          element={
+            <SignIn
+              signIn={signIn}
+              setIsLoggedIn={setIsLoggedIn}
+              isLoggedIn={isLoggedIn}
+              userData={userData}
+            />
+          }
+        />
         <Route path='/repo-detail/:id' element={<RepoDetail />} />
         <Route path='/create-review' element={<ReviewForm />} />
+        <Route
+          path='/signUp'
+          element={<SignUp signIn={signIn} setIsLoggedIn={setIsLoggedIn} />}
+        />
         <Route path='*' element={<Navigate to='/' replace />} />
       </Routes>
     </View>

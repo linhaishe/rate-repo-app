@@ -16,22 +16,21 @@ const styles = StyleSheet.create({
   },
 });
 
-const SignIn = () => {
-  const { signIn, setIsLoggedIn, isLoggedIn, userData } = useSignIn();
+const SignIn = (props) => {
   const onSubmit = async (signInValue) => {
     try {
-      await signIn(signInValue);
-      setIsLoggedIn(true);
+      await props?.signIn(signInValue);
+      props?.setIsLoggedIn(true);
     } catch (e) {
       console.log(e);
     }
   };
 
   const renderContent = () => {
-    if (isLoggedIn === null) return null;
+    if (props?.isLoggedIn === null) return null;
 
-    return isLoggedIn ? (
-      <UserProfile userData={userData} />
+    return props?.isLoggedIn ? (
+      <UserProfile userData={props?.userData} />
     ) : (
       <SignInForm onSubmit={onSubmit} />
     );

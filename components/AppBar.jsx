@@ -40,7 +40,7 @@ const AppBar = () => {
     return (
       <Link to={'/signin'}>
         <Text style={{ color: '#fff' }} fontWeights={'bold'}>
-          SignIn
+          Sign In
         </Text>
       </Link>
     );
@@ -60,6 +60,7 @@ const AppBar = () => {
           Repository
         </Text>
       </Link>
+
       {data?.me?.id && (
         <Link to={'/create-review'}>
           <Text style={{ color: '#fff' }} fontWeights={'bold'}>
@@ -67,7 +68,24 @@ const AppBar = () => {
           </Text>
         </Link>
       )}
-      {signInRender()}
+
+      {data?.me?.id && <SignOut />}
+
+      {!data?.me?.id && (
+        <Link to={'/signUp'}>
+          <Text style={{ color: '#fff' }} fontWeights={'bold'}>
+            Sign Up
+          </Text>
+        </Link>
+      )}
+
+      {!data?.me?.id && (
+        <Link to={'/signin'}>
+          <Text style={{ color: '#fff' }} fontWeights={'bold'}>
+            Sign In
+          </Text>
+        </Link>
+      )}
     </View>
     //     </ScrollView>
     //   </SafeAreaView>
