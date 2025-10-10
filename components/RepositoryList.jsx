@@ -17,6 +17,7 @@ const RepositoryList = () => {
   const { data } = useQuery(ALL_REPOSITORIES, {
     fetchPolicy: 'cache-and-network',
   });
+
   const repositoryNodes = data?.repositories
     ? data?.repositories.edges.map((edge) => edge.node)
     : [];

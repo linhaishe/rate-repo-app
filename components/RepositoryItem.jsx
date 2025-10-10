@@ -1,7 +1,9 @@
-import { View, Image, StyleSheet } from 'react-native';
+import { View, Image, StyleSheet, Pressable } from 'react-native';
 import Text from './styleComponent/Text';
 import theme from './styleComponent/theme';
 import CountList from './CountList';
+import { useNavigate, useParams } from 'react-router-native';
+import * as Linking from 'expo-linking';
 
 const styles = StyleSheet.create({
   cardWrap: {
@@ -36,21 +38,58 @@ const styles = StyleSheet.create({
     maxWidth: 200,
     padding: 6,
   },
+
+  openGithubBtn: {
+    backgroundColor: theme.colors.primary,
+    color: '#fff',
+    width: '100%',
+    marginTop: 15,
+    display: 'flex',
+    alignItems: 'center',
+    padding: 10,
+    borderRadius: 5,
+  },
 });
 
 const RepositoryItem = ({ item }) => {
+  let navigate = useNavigate();
+  const { id } = useParams();
+
   return (
-    <View style={styles.cardWrap} testID='repositoryItem'>
-      <View style={styles.infoWrap}>
-        <Image style={styles.imgWrap} source={{ uri: item.ownerAvatarUrl }} />
-        <View style={styles.detailWrap}>
-          <Text fontWeight={'bold'}>{item.fullName}</Text>
-          <Text color={'textSecondary'}>{item.description}</Text>
-          <Text style={styles.typeWrap}>{item.language}</Text>
+    <Pressable
+      onPress={() => {
+        if (id) {
+          return;
+        }
+
+        navigate(`/repo-detail/${item?.id}`);
+      }}
+    >
+      <View style={styles.cardWrap} testID='repositoryItem'>
+        <View style={styles.infoWrap}>
+          <Image
+            style={styles.imgWrap}
+            source={{ uri: item?.ownerAvatarUrl }}
+          />
+          <View style={styles.detailWrap}>
+            <Text fontWeight={'bold'}>{item?.fullName}</Text>
+            <Text color={'textSecondary'}>{item?.description}</Text>
+            <Text style={styles.typeWrap}>{item?.language}</Text>
+          </View>
         </View>
+        <CountList item={item} />
+        {id && (
+          <Pressable
+            onPress={() => {
+              Linking.openURL(item?.url);
+            }}
+            style={styles.openGithubBtn}
+          >
+            <Text style={{ color: '#fff' }}>Open in Github</Text>
+          </Pressable>
+        )}
       </View>
-      <CountList item={item} />
-    </View>
+    </Pressable>
   );
 };
 

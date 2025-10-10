@@ -18,10 +18,10 @@ const styles = StyleSheet.create({
 });
 
 const formatRepositoryStats = (repo) => [
-  { name: 'Stars', value: repo.stargazersCount },
-  { name: 'Forks', value: repo.forksCount },
-  { name: 'Reviews', value: repo.reviewCount },
-  { name: 'Rating', value: repo.ratingAverage },
+  { name: 'Stars', value: repo?.stargazersCount || 0 },
+  { name: 'Forks', value: repo?.forksCount || 0 },
+  { name: 'Reviews', value: repo?.reviewCount || 0 },
+  { name: 'Rating', value: repo?.ratingAverage || 0 },
 ];
 
 const CountList = ({ item }) => {
@@ -31,8 +31,8 @@ const CountList = ({ item }) => {
     <View style={styles.listWrap}>
       {statusDataList?.map((item, index) => (
         <View key={index} style={styles.itemWrap}>
-          <Text fontWeight={'bold'}>{formatCount(item.value)}</Text>
-          <Text color={'textSecondary'}>{item.name}</Text>
+          <Text fontWeight={'bold'}>{formatCount(item?.value)}</Text>
+          <Text color={'textSecondary'}>{item?.name}</Text>
         </View>
       ))}
     </View>

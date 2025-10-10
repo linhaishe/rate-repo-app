@@ -32,12 +32,7 @@ const AppBar = () => {
     fetchPolicy: 'cache-and-network',
   });
 
-  console.log('data', data);
   const signInRender = () => {
-    // if (data?.me?.id === undefined) {
-    //   return null;
-    // }
-
     if (data?.me?.id) {
       return <SignOut />;
     }

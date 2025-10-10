@@ -47,3 +47,24 @@ export const IS_ME = gql`
     }
   }
 `;
+
+export const GET_REPO_DETAIL = gql`
+  query Repository($repositoryId: ID!) {
+    repository(id: $repositoryId) {
+      watchersCount
+      fullName
+      forksCount
+      description
+      id
+      language
+      name
+      openIssuesCount
+      ownerAvatarUrl
+      ownerName
+      ratingAverage
+      reviewCount
+      stargazersCount
+      url
+    }
+  }
+`;
