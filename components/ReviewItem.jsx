@@ -2,16 +2,19 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import Text from './styleComponent/Text';
 import theme from './styleComponent/theme';
+import { Button } from './Button';
 
 // 1. add btn  - goto repo / delete
 // alert
 // refetch
 
 const styles = StyleSheet.create({
+  MyReviewWrap: {
+    marginBottom: 5,
+  },
   reviewWrap: {
     width: '100%',
     padding: 20,
-    marginBottom: 5,
     backgroundColor: '#fff',
     display: 'flex',
     justifyContent: 'center',
@@ -45,35 +48,55 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 20,
   },
+  btnWrap: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingBottom: 10,
+  },
 });
 
 const ReviewItem = ({ review }) => {
   return (
-    <View style={styles.reviewWrap}>
-      <View style={styles.scoreWrap}>
-        <View style={styles.scoreTextWrap}>
-          <Text color={'primary'} fontWeight={'bold'} style={styles.scoreText}>
-            {review?.rating}
+    <View style={styles.MyReviewWrap}>
+      <View style={styles.reviewWrap}>
+        <View style={styles.scoreWrap}>
+          <View style={styles.scoreTextWrap}>
+            <Text
+              color={'primary'}
+              fontWeight={'bold'}
+              style={styles.scoreText}
+            >
+              {review?.rating}
+            </Text>
+          </View>
+        </View>
+        <View style={styles.comment}>
+          <Text fontWeight={'bold'}>{review?.user?.username}</Text>
+          <Text
+            color={'textSecondary'}
+            style={{
+              marginTop: 5,
+            }}
+          >
+            {review?.createdAt}
+          </Text>
+          <Text
+            style={{
+              marginTop: 10,
+            }}
+          >
+            {review?.text}
           </Text>
         </View>
       </View>
-      <View style={styles.comment}>
-        <Text fontWeight={'bold'}>{review?.user?.username}</Text>
-        <Text
-          color={'textSecondary'}
-          style={{
-            marginTop: 5,
-          }}
-        >
-          {review?.createdAt}
-        </Text>
-        <Text
-          style={{
-            marginTop: 10,
-          }}
-        >
-          {review?.text}
-        </Text>
+      <View style={styles.btnWrap}>
+        <Button>View Repo</Button>
+        <Button buttonStyles={{ backgroundColor: 'red' }}>Delete review</Button>
       </View>
     </View>
   );

@@ -12,20 +12,10 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     padding: 10,
-    width: '70%',
+    // width: '70%',
   },
   defaultBtnText: {
     color: '#fff',
-  },
-  defaultBtnWrap: {
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    display: 'flex',
-    gap: 30,
-    justifyContent: 'center',
-    paddingBottom: 20,
-    paddingTop: 20,
-    width: '100%',
   },
 });
 
