@@ -111,3 +111,37 @@ export const CREATE_USER = gql`
     }
   }
 `;
+
+/**
+ * @orderby CREATED_AT / RATING_AVERAGE
+ * @orderDirection ASC / DESC
+ */
+
+export const REPO_ORDERBY = gql`
+  query Repositories(
+    $orderBy: AllRepositoriesOrderBy
+    $orderDirection: OrderDirection
+  ) {
+    repositories(orderBy: $orderBy, orderDirection: $orderDirection) {
+      edges {
+        node {
+          createdAt
+          description
+          forksCount
+          fullName
+          id
+          language
+          name
+          openIssuesCount
+          ownerAvatarUrl
+          ownerName
+          ratingAverage
+          reviewCount
+          stargazersCount
+          url
+          watchersCount
+        }
+      }
+    }
+  }
+`;
