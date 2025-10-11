@@ -490,7 +490,7 @@ FAIL **tests**/example.test.js
 
     TypeError: Object.defineProperty called on non-object
         at Function.defineProperty (<anonymous>)
-
+    
       at Object.<anonymous> (node_modules/jest-expo/src/preset/setup.js:47:8)
 
 Test Suites: 1 failed, 1 total
@@ -561,3 +561,65 @@ React Native Testing Library's documentation has some good hints on [how to quer
 For all available queries, check the React Native Testing Library's [documentation](https://callstack.github.io/react-native-testing-library/docs/api/queries). The full list of available React Native specific matchers can be found in the [documentation](https://github.com/testing-library/jest-native#matchers) of the jest-native library. Jest's [documentation](https://jestjs.io/docs/en/expect) contains every universal Jest matcher.
 
 The second very important React Native Testing Library concept is firing events. We can fire an event in a provided node by using the [fireEvent](https://callstack.github.io/react-native-testing-library/docs/api#fireevent) object's methods. This is useful for example typing text into a text field or pressing a button. Here is an example of how to test submitting a simple form:
+
+----
+
+```
+Web Bundling failed 16598ms node_modules/expo/AppEntry.js (1188 modules)
+Unable to resolve "graphql" from "node_modules/graphql-tag/lib/index.js"
+  1 | import { __assign } from "tslib";
+> 2 | import { parse } from 'graphql';
+    |                        ^
+  3 | var docCache = new Map();
+  4 | var fragmentSourceMap = new Map();
+  5 | var printFragmentWarnings = true;
+
+Import stack:
+
+ node_modules/graphql-tag/lib/index.js
+ | import "graphql"
+
+ node_modules/@apollo/client/core/index.js
+ | import "graphql-tag"
+
+ node_modules/@apollo/client/index.js
+ | import "./core/index.js"
+
+ App.js
+ | import "@apollo/client"
+
+ node_modules/expo/AppEntry.js
+ | import "../../App"
+
+ 
+ | import "./node_modules/expo/AppEntry"
+```
+
+你这个报错的核心信息是：
+
+```
+Unable to resolve "graphql" from "node_modules/graphql-tag/lib/index.js"
+```
+
+也就是说 **项目里缺少 `graphql` 包**，但是 `@apollo/client` 或 `graphql-tag` 都依赖它。
+
+------
+
+### 原因分析
+
+1. 你的 `package.json` 中有：
+
+```
+"dependencies": {
+  "@apollo/client": "^3.9.11",
+  ...
+},
+"overrides": {
+  "graphql": "^16.11.0"
+}
+```
+
+- 你用了 `overrides` 声明 `graphql@^16.11.0`，但是并没有在 `dependencies` 里显式安装 `graphql`
+- Expo / React Native 的打包器在 Web 打包时找不到 `graphql`，就报错了
+
+1. 也可能是 **node_modules 缓存/锁文件问题**，导致 `graphql` 没有真正被安装。
