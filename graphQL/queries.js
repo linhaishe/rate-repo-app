@@ -137,33 +137,46 @@ export const CREATE_USER = gql`
 
 export const REPO_ORDERBY = gql`
   query Repositories(
+    $after: String
+    $first: Int
     $orderBy: AllRepositoriesOrderBy
     $orderDirection: OrderDirection
     $searchKeyword: String
   ) {
     repositories(
+      after: $after
+      first: $first
       orderBy: $orderBy
       orderDirection: $orderDirection
       searchKeyword: $searchKeyword
     ) {
+      totalCount
+      pageInfo {
+        startCursor
+        hasPreviousPage
+        hasNextPage
+        endCursor
+      }
       edges {
         node {
-          createdAt
-          description
-          forksCount
-          fullName
           id
-          language
-          name
-          openIssuesCount
-          ownerAvatarUrl
           ownerName
+          name
+          createdAt
+          fullName
           ratingAverage
           reviewCount
           stargazersCount
-          url
           watchersCount
+          forksCount
+          openIssuesCount
+          url
+          ownerAvatarUrl
+          description
+          language
+          userHasReviewed
         }
+        cursor
       }
     }
   }

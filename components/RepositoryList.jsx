@@ -1,12 +1,8 @@
-// @ts-nocheck
 import { FlatList, View, StyleSheet } from 'react-native';
 import RepositoryItem from './RepositoryItem';
 // import useRepositories from '../hooks/useRepositories';
-import { useQuery } from '@apollo/client';
-import { REPO_ORDERBY } from '../graphQL/queries';
-import { useEffect, useMemo, useState } from 'react';
 import RepositoryListHeader from './SortAndSearch';
-import { useDebounce } from 'use-debounce';
+import useRepositories from '../hooks/useRepositories';
 
 const styles = StyleSheet.create({
   separator: {
@@ -17,41 +13,25 @@ const styles = StyleSheet.create({
 const ItemSeparator = () => <View style={styles.separator} />;
 
 const RepositoryList = () => {
-  // const { repositories } = useRepositories();
-  const [selectedValue, setSelectedValue] = useState(0);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [debouncedSearch] = useDebounce(searchQuery, 500);
-
-  const variables = useMemo(() => {
-    const base = (() => {
-      switch (Number(selectedValue)) {
-        case 1:
-          return { orderBy: 'RATING_AVERAGE', orderDirection: 'DESC' };
-        case 2:
-          return { orderBy: 'RATING_AVERAGE', orderDirection: 'ASC' };
-        default:
-          return { orderBy: 'CREATED_AT', orderDirection: 'DESC' };
-      }
-    })();
-
-    return {
-      ...base,
-      searchKeyword: debouncedSearch || undefined,
-    };
-  }, [selectedValue, debouncedSearch]);
-
-  const { data } = useQuery(REPO_ORDERBY, {
-    variables,
-    fetchPolicy: 'cache-and-network',
+  const {
+    fetchMore,
+    selectedValue,
+    searchQuery,
+    setSearchQuery,
+    setSelectedValue,
+    repositories,
+  } = useRepositories({
+    first: 4,
   });
 
-  const repositoryNodes = data?.repositories
-    ? data?.repositories.edges.map((edge) => edge.node)
-    : [];
-
-  function onEndReach(info) {
-    console.log('on end', info);
+  function onEndReach() {
+    console.log('on end');
+    fetchMore();
   }
+
+  const repositoryNodes = repositories
+    ? repositories.edges.map((edge) => edge.node)
+    : [];
 
   return (
     <FlatList
