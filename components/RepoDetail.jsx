@@ -8,8 +8,8 @@ import ReviewItem from './ReviewItem';
 
 function RepoDetail() {
   const { id } = useParams();
-  const { data } = useQuery(GET_REPO_DETAIL, {
-    variables: { repositoryId: id },
+  const { data, fetchMore, loading } = useQuery(GET_REPO_DETAIL, {
+    variables: { repositoryId: id, first: 4 },
     skip: !id,
     fetchPolicy: 'cache-and-network',
   });
@@ -22,9 +22,27 @@ function RepoDetail() {
     };
   });
 
+  function onEndReach() {
+    const canFetchMore =
+      !loading && data?.repository?.reviews?.pageInfo?.hasNextPage;
+
+    if (!canFetchMore) {
+      return;
+    }
+    console.log('review list on end');
+    fetchMore({
+      variables: {
+        after: data?.repository?.reviews?.pageInfo?.endCursor,
+        repositoryId: id,
+      },
+    });
+  }
+
   return (
     <FlatList
       data={reviews}
+      onEndReached={onEndReach}
+      onEndReachedThreshold={0.5}
       renderItem={({ item }) => <ReviewItem review={item} />}
       keyExtractor={({ id }) => id}
       ListHeaderComponent={() => <RepositoryItem item={data?.repository} />}

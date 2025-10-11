@@ -67,7 +67,7 @@ export const IS_ME = gql`
 `;
 
 export const GET_REPO_DETAIL = gql`
-  query Repository($repositoryId: ID!) {
+  query Repository($repositoryId: ID!, $after: String, $first: Int) {
     repository(id: $repositoryId) {
       watchersCount
       fullName
@@ -83,7 +83,7 @@ export const GET_REPO_DETAIL = gql`
       reviewCount
       stargazersCount
       url
-      reviews {
+      reviews(first: $first, after: $after) {
         edges {
           node {
             id
@@ -95,6 +95,13 @@ export const GET_REPO_DETAIL = gql`
               username
             }
           }
+        }
+        totalCount
+        pageInfo {
+          hasPreviousPage
+          hasNextPage
+          startCursor
+          endCursor
         }
       }
     }
