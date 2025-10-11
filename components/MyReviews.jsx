@@ -1,7 +1,6 @@
 import { useQuery } from '@apollo/client';
 import { IS_ME } from '../graphQL/queries';
-import React, { useEffect } from 'react';
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
 import ReviewItem from './ReviewItem';
 import { format } from 'date-fns';
 
@@ -19,10 +18,20 @@ function MyReviews() {
     };
   });
 
+  const onAlert = () =>
+    Alert.alert('Alert Title', 'My Alert Msg', [
+      {
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      { text: 'OK', onPress: () => console.log('OK Pressed') },
+    ]);
+
   return (
     <View>
       {reviews?.map((v, i) => {
-        return <ReviewItem review={v} key={i} />;
+        return <ReviewItem review={v} key={i} onAlert={onAlert} />;
       })}
     </View>
   );

@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import Text from './styleComponent/Text';
 import theme from './styleComponent/theme';
 import { Button } from './Button';
-
+import * as Linking from 'expo-linking';
 // 1. add btn  - goto repo / delete
 // alert
 // refetch
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const ReviewItem = ({ review }) => {
+const ReviewItem = ({ review, onAlert }) => {
   return (
     <View style={styles.MyReviewWrap}>
       <View style={styles.reviewWrap}>
@@ -95,8 +95,23 @@ const ReviewItem = ({ review }) => {
         </View>
       </View>
       <View style={styles.btnWrap}>
-        <Button>View Repo</Button>
-        <Button buttonStyles={{ backgroundColor: 'red' }}>Delete review</Button>
+        <Button
+          onPress={() => {
+            Linking.openURL(review?.repository?.url);
+          }}
+        >
+          View Repo
+        </Button>
+        <Button
+          onPress={() => {
+            onAlert();
+            console.log(1323);
+            // () => Alert.alert('Test', 'Hello');
+          }}
+          buttonStyles={{ backgroundColor: 'red' }}
+        >
+          Delete review
+        </Button>
       </View>
     </View>
   );

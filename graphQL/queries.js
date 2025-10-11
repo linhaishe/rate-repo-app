@@ -55,6 +55,10 @@ export const IS_ME = gql`
               id
               username
             }
+            repository {
+              id
+              url
+            }
           }
         }
       }
