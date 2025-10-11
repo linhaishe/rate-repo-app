@@ -7,6 +7,7 @@ import RepoDetail from './RepoDetail';
 import ReviewForm from './ReviewForm';
 import SignUp from './SignUp';
 import useSignIn from '../hooks/useSignIn';
+import MyReviews from './MyReviews';
 
 const styles = StyleSheet.create({
   container: {
@@ -36,6 +37,7 @@ const Main = () => {
           }
         />
         <Route path='/repo-detail/:id' element={<RepoDetail />} />
+        <Route path='/my-reviews' element={<MyReviews />} />
         <Route path='/create-review' element={<ReviewForm />} />
         <Route
           path='/signUp'

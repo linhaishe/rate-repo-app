@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#24292e',
     display: 'flex',
     flexDirection: 'row',
-    gap: 20,
+    gap: 10,
     height: 30,
     justifyContent: 'center',
     width: '100%',
@@ -31,20 +31,6 @@ const AppBar = () => {
   const { data } = useQuery(IS_ME, {
     fetchPolicy: 'cache-and-network',
   });
-
-  const signInRender = () => {
-    if (data?.me?.id) {
-      return <SignOut />;
-    }
-
-    return (
-      <Link to={'/signin'}>
-        <Text style={{ color: '#fff' }} fontWeights={'bold'}>
-          Sign In
-        </Text>
-      </Link>
-    );
-  };
 
   useEffect(() => {
     console.log('IS_ME query executed, data:', data);
@@ -65,6 +51,14 @@ const AppBar = () => {
         <Link to={'/create-review'}>
           <Text style={{ color: '#fff' }} fontWeights={'bold'}>
             Create Review
+          </Text>
+        </Link>
+      )}
+
+      {data?.me?.id && (
+        <Link to={'/my-reviews'}>
+          <Text style={{ color: '#fff' }} fontWeights={'bold'}>
+            My Reviews
           </Text>
         </Link>
       )}

@@ -40,10 +40,24 @@ export const USER_AUTH = gql`
 `;
 
 export const IS_ME = gql`
-  query {
+  query ($includeReviews: Boolean = false) {
     me {
       id
       username
+      reviews @include(if: $includeReviews) {
+        edges {
+          node {
+            text
+            id
+            createdAt
+            rating
+            user {
+              id
+              username
+            }
+          }
+        }
+      }
     }
   }
 `;

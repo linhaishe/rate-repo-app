@@ -48,10 +48,6 @@ const RepositoryList = () => {
     ? data?.repositories.edges.map((edge) => edge.node)
     : [];
 
-  useEffect(() => {
-    console.log('searchQuery', searchQuery);
-  }, [searchQuery]);
-
   return (
     <FlatList
       data={repositoryNodes}

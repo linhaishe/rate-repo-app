@@ -81,8 +81,6 @@ const ReviewForm = (props) => {
       review: true,
     });
     const { repoOwnerName, repoName, rating, review } = values;
-    console.log('values', values);
-
     const rspData = await createReview({
       variables: {
         review: {
