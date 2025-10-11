@@ -16,11 +16,26 @@ const useRepositories = () => {
     setRepositories(json);
   };
 
+  const handleFetchMore = () => {
+    const canFetchMore = !loading && data?.repositories.pageInfo.hasNextPage;
+
+    if (!canFetchMore) {
+      return;
+    }
+
+    fetchMore({
+      variables: {
+        after: data.repositories.pageInfo.endCursor,
+        ...variables,
+      },
+    });
+  };
+
   useEffect(() => {
     fetchRepositories();
   }, []);
 
-  return { repositories, loading, refetch: fetchRepositories };
+  return { repositories, loading, refetch: fetchRepositories, handleFetchMore };
 };
 
 export default useRepositories;

@@ -623,3 +623,9 @@ Unable to resolve "graphql" from "node_modules/graphql-tag/lib/index.js"
 - Expo / React Native 的打包器在 Web 打包时找不到 `graphql`，就报错了
 
 1. 也可能是 **node_modules 缓存/锁文件问题**，导致 `graphql` 没有真正被安装。
+
+
+
+
+
+To dig deeper into cursor-based pagination, read Shopify's article [Pagination with Relative Cursors](https://shopify.engineering/pagination-relative-cursors).

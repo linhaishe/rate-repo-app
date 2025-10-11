@@ -2,9 +2,20 @@ import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
 // @ts-ignore
 import { GRAPHQL_URL } from '@env';
 import { setContext } from '@apollo/client/link/context';
+import { relayStylePagination } from '@apollo/client/utilities';
 
 const httpLink = createHttpLink({
   uri: `${GRAPHQL_URL}/graphql`,
+});
+
+const cache = new InMemoryCache({
+  typePolicies: {
+    Query: {
+      fields: {
+        repositories: relayStylePagination(),
+      },
+    },
+  },
 });
 
 const createApolloClient = (authStorage) => {
@@ -28,7 +39,8 @@ const createApolloClient = (authStorage) => {
   });
   return new ApolloClient({
     link: authLink.concat(httpLink),
-    cache: new InMemoryCache(),
+    // cache: new InMemoryCache(),
+    cache,
   });
 };
 
