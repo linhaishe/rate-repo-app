@@ -1,9 +1,10 @@
 /* eslint-disable react-native/no-inline-styles */
 import Text from '../styleComponent/Text';
 import { useFormik } from 'formik';
-import { Pressable, View, TextInput, StyleSheet } from 'react-native';
+import { View, TextInput, StyleSheet } from 'react-native';
 import * as yup from 'yup';
 import theme from '../styleComponent/theme';
+import { Button } from 'components/Button';
 
 const styles = StyleSheet.create({
   errorBorder: {
@@ -16,19 +17,6 @@ const styles = StyleSheet.create({
     color: `${theme.colors.textSecondary}`,
     padding: 10,
     width: '70%',
-  },
-  signInBtn: {
-    alignItems: 'center',
-    backgroundColor: theme.colors.primary,
-    borderRadius: 5,
-    color: '#fff',
-    display: 'flex',
-    justifyContent: 'center',
-    padding: 10,
-    width: '70%',
-  },
-  signInText: {
-    color: '#fff',
   },
   signInWrap: {
     alignItems: 'center',
@@ -105,17 +93,14 @@ const SignInForm = (props) => {
       {formik.touched.pwd && formik.errors.pwd && (
         <Text style={{ color: 'red' }}>{formik.errors.pwd}</Text>
       )}
-      <Pressable
+      <Button
         onPress={() => {
           formik.setTouched({ userName: true, pwd: true });
           formik.handleSubmit();
         }}
-        style={styles.signInBtn}
       >
-        <Text style={styles.signInText} fontWeights={'bold'}>
-          Sign In
-        </Text>
-      </Pressable>
+        Sign In
+      </Button>
     </View>
   );
 };

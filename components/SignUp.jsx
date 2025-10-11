@@ -1,13 +1,14 @@
 /* eslint-disable react-native/no-inline-styles */
 import Text from './styleComponent/Text';
 import { useFormik } from 'formik';
-import { Pressable, View, TextInput, StyleSheet } from 'react-native';
+import { View, TextInput, StyleSheet } from 'react-native';
 import * as yup from 'yup';
 import theme from './styleComponent/theme';
 import { useNavigate } from 'react-router-native';
 import { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { CREATE_USER } from '../graphQL/queries';
+import { Button } from './Button';
 
 const styles = StyleSheet.create({
   errorBorder: {
@@ -21,20 +22,7 @@ const styles = StyleSheet.create({
     padding: 10,
     width: '70%',
   },
-  signInBtn: {
-    alignItems: 'center',
-    backgroundColor: theme.colors.primary,
-    borderRadius: 5,
-    color: '#fff',
-    display: 'flex',
-    justifyContent: 'center',
-    padding: 10,
-    width: '70%',
-  },
-  signInText: {
-    color: '#fff',
-  },
-  signInWrap: {
+  signUpWrap: {
     alignItems: 'center',
     backgroundColor: '#fff',
     display: 'flex',
@@ -119,7 +107,7 @@ const SignUp = (props) => {
   });
 
   return (
-    <View style={styles.signInWrap}>
+    <View style={styles.signUpWrap}>
       {/* {error && <Text style={{ color: 'red' }}>{error}</Text>} */}
       <TextInput
         placeholder='User Name'
@@ -166,17 +154,18 @@ const SignUp = (props) => {
       {formik.touched.pwdConfirm && formik.errors.pwdConfirm && (
         <Text style={{ color: 'red' }}>{formik.errors.pwdConfirm}</Text>
       )}
-      <Pressable
+      <Button
         onPress={() => {
-          formik.setTouched({ userName: true, pwd: true, pwdConfirm: true });
+          formik.setTouched({
+            userName: true,
+            pwd: true,
+            pwdConfirm: true,
+          });
           formik.handleSubmit();
         }}
-        style={styles.signInBtn}
       >
-        <Text style={styles.signInText} fontWeights={'bold'}>
-          Sign Up
-        </Text>
-      </Pressable>
+        Sign Up
+      </Button>
     </View>
   );
 };

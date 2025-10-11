@@ -2,11 +2,12 @@ import { useMutation } from '@apollo/client';
 import Text from './styleComponent/Text';
 import theme from './styleComponent/theme';
 import { useFormik } from 'formik';
-import { Pressable, View, TextInput, StyleSheet } from 'react-native';
+import { View, TextInput, StyleSheet } from 'react-native';
 import * as yup from 'yup';
 import { ADD_REVIEW } from '../graphQL/queries';
 import { useNavigate } from 'react-router-native';
 import { useState } from 'react';
+import { Button } from './Button';
 
 const styles = StyleSheet.create({
   errorBorder: {
@@ -19,19 +20,6 @@ const styles = StyleSheet.create({
     color: `${theme.colors.textSecondary}`,
     padding: 10,
     width: '70%',
-  },
-  signInBtn: {
-    alignItems: 'center',
-    backgroundColor: theme.colors.primary,
-    borderRadius: 5,
-    color: '#fff',
-    display: 'flex',
-    justifyContent: 'center',
-    padding: 10,
-    width: '70%',
-  },
-  signInText: {
-    color: '#fff',
   },
   signInWrap: {
     alignItems: 'center',
@@ -163,22 +151,19 @@ const ReviewForm = (props) => {
             : null,
         ]}
       />
-      <Pressable
+
+      <Button
         onPress={() => {
           formik.setTouched({
-            repoOwnerName: true,
-            repoName: true,
-            rating: true,
-            review: true,
+            userName: true,
+            pwd: true,
+            pwdConfirm: true,
           });
           formik.handleSubmit();
         }}
-        style={styles.signInBtn}
       >
-        <Text style={styles.signInText} fontWeights={'bold'}>
-          Create Review
-        </Text>
-      </Pressable>
+        Create Review
+      </Button>
     </View>
   );
 };

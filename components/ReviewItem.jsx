@@ -3,6 +3,10 @@ import { View, StyleSheet } from 'react-native';
 import Text from './styleComponent/Text';
 import theme from './styleComponent/theme';
 
+// 1. add btn  - goto repo / delete
+// alert
+// refetch
+
 const styles = StyleSheet.create({
   reviewWrap: {
     width: '100%',
