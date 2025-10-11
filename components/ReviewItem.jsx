@@ -4,9 +4,6 @@ import Text from './styleComponent/Text';
 import theme from './styleComponent/theme';
 import { Button } from './Button';
 import * as Linking from 'expo-linking';
-// 1. add btn  - goto repo / delete
-// alert
-// refetch
 
 const styles = StyleSheet.create({
   MyReviewWrap: {
@@ -60,7 +57,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const ReviewItem = ({ review, onAlert }) => {
+const ReviewItem = ({ review, onAlert, showBtn = false }) => {
   return (
     <View style={styles.MyReviewWrap}>
       <View style={styles.reviewWrap}>
@@ -94,25 +91,26 @@ const ReviewItem = ({ review, onAlert }) => {
           </Text>
         </View>
       </View>
-      <View style={styles.btnWrap}>
-        <Button
-          onPress={() => {
-            Linking.openURL(review?.repository?.url);
-          }}
-        >
-          View Repo
-        </Button>
-        <Button
-          onPress={() => {
-            onAlert();
-            console.log(1323);
-            // () => Alert.alert('Test', 'Hello');
-          }}
-          buttonStyles={{ backgroundColor: 'red' }}
-        >
-          Delete review
-        </Button>
-      </View>
+      {showBtn && (
+        <View style={styles.btnWrap}>
+          <Button
+            onPress={() => {
+              Linking.openURL(review?.repository?.url);
+            }}
+          >
+            View Repo
+          </Button>
+          <Button
+            onPress={() => {
+              onAlert(review?.id);
+              console.log(1323);
+            }}
+            buttonStyles={{ backgroundColor: 'red' }}
+          >
+            Delete review
+          </Button>
+        </View>
+      )}
     </View>
   );
 };
